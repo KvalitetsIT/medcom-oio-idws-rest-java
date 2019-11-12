@@ -2,8 +2,6 @@ package client.sts;
 
 import java.util.concurrent.TimeUnit;
 
-import net.jodah.expiringmap.ExpiringMap;
-
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.trust.STSClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import client.dto.AccessToken;
 import client.util.TokenEncoder;
+import net.jodah.expiringmap.ExpiringMap;
 
 @Component
 public class TokenFetcher {
@@ -44,7 +43,7 @@ public class TokenFetcher {
 			String encodedToken = "saml-token=" + TokenEncoder.encode(samlToken);
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-			ResponseEntity<AccessToken> authorizationServiceResponse = restTemplate.exchange("https://localhost:8443/auth", HttpMethod.POST, new HttpEntity<>(encodedToken, headers), AccessToken.class);
+			ResponseEntity<AccessToken> authorizationServiceResponse = restTemplate.exchange("https://videoapi.test-vdxapi.vconf.dk/videoapi/token", HttpMethod.POST, new HttpEntity<>(encodedToken, headers), AccessToken.class);
 			accessToken = authorizationServiceResponse.getBody();
 
 			accessTokenCache.put(audience, accessToken);

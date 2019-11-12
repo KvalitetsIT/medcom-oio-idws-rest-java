@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -22,10 +23,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import client.interceptor.LogInterceptor;
@@ -34,7 +37,7 @@ import client.interceptor.LogInterceptor;
 @ImportResource({ "classpath:cxf.xml" })
 public class ClientConfig {
 
-	@Value("classpath:client.pfx")
+	@Value("classpath:client.jks")
 	private Resource keystore;
 
 	@Bean
@@ -43,7 +46,7 @@ public class ClientConfig {
 		builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
 
 		InputStream inputStream = keystore.getInputStream();
-		KeyStore ks = KeyStore.getInstance("pkcs12");
+		KeyStore ks = KeyStore.getInstance("jks");
 		ks.load(inputStream, "Test1234".toCharArray());
 		builder.loadKeyMaterial(ks, "Test1234".toCharArray());
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build());
@@ -65,6 +68,12 @@ public class ClientConfig {
 		interceptors.add(loggerInterceptor);
 		template.setInterceptors(interceptors);
 
+		
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		converter.setSupportedMediaTypes(Arrays.asList(MediaType.TEXT_PLAIN));
+		template.getMessageConverters().add(0, converter);
+
+		
 		return template;
 	}
 }

@@ -25,8 +25,8 @@ public class DigstSTSClient extends STSClient {
 
         if (appliesTo != null && addressingNamespace != null) {
         	// modified the namespace so it uses ws-policy 1.1 namespace (not supported by CXF, so we have to do this hacky thing)
-            writer.writeStartElement("wsp", "AppliesTo", "http://schemas.xmlsoap.org/ws/2002/12/policy");
-            writer.writeNamespace("wsp", "http://schemas.xmlsoap.org/ws/2002/12/policy");
+            writer.writeStartElement("wsp", "AppliesTo", "http://www.w3.org/ns/ws-policy");
+            writer.writeNamespace("wsp", "http://www.w3.org/ns/ws-policy");
             writer.writeStartElement("wsa", "EndpointReference", addressingNamespace);
             writer.writeNamespace("wsa", addressingNamespace);
             writer.writeStartElement("wsa", "Address", addressingNamespace);

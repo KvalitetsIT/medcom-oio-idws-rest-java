@@ -32,17 +32,21 @@ public class Application implements CommandLineRunner {
 
 	public void run(String... args) throws Exception {
 		
+
+		System.setProperty("javax.net.ssl.trustStore", "/home/eva/ffproject/medcom-oio-idws-rest-java/rest-client/src/main/resources/trust.jks");
+		System.setProperty("javax.net.ssl.trustStorePassword", "Test1234");
+		
 		// get the access token
-		AccessToken accessToken = tokenFetcher.getAccessToken("https://wsp.itcrew.dk");
+		AccessToken accessToken = tokenFetcher.getAccessToken("urn:medcom:videoapi");
 
 		// setup request Authorization header
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Holder-of-key " + accessToken.getToken());
 
 		// call service
-		ResponseEntity<String> restServicResponse = restTemplate.exchange("https://localhost:8443/api/hello?name=John", HttpMethod.GET, new HttpEntity<>("", headers), String.class);
+		ResponseEntity<String> restServicResponse = restTemplate.exchange("https://videoapi.test-vdxapi.vconf.dk/videoapi/meetings?from-start-time=2018-01-01T03:12:30 -0100&to-start-time=2023-12-31T03:12:30 -0100", HttpMethod.GET, new HttpEntity<>("", headers), String.class);
 
 		// should print out "Hello John"
-		logger.info(restServicResponse.toString());
+//		logger.info(restServicResponse.getBody());
 	}
 }

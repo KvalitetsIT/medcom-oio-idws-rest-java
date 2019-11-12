@@ -31,6 +31,7 @@ public class TokenEncoder {
 		String base64EncodedSamlToken = Base64.encodeBase64String(samlTokenAsString.getBytes(Charset.forName("UTF-8")));
 		
 		// URLEncode and return
-		return URLEncoder.encode(base64EncodedSamlToken, "UTF-8");
+		return base64EncodedSamlToken;
+//		return URLEncoder.encode(base64EncodedSamlToken, "UTF-8");
 	}
 }
